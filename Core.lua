@@ -72,6 +72,10 @@ function BlizzTweaks:HandleAutoRepair(evt)
     end
 
     repairAllCost, canRepair = GetRepairAllCost()
+    if not canRepair then
+        return
+    end
+
     money = GetMoney()
     if( IsInGuild() and CanGuildBankRepair() ) then
         BlizzTweaks:Print("Repairing Items using Guild Funds: "..GetCoinText(repairAllCost,", "));
