@@ -1,0 +1,15 @@
+## Interface: 100000
+## Title: Blizz UI Teaks
+## Notes: Small Tweaks to the standard UI
+## Author: Raika
+## DefaultState: enabled
+## Version: 10.0.0
+
+embeds.xml
+
+# Locale files
+Locales\Locale-enUS.lua
+
+Core.lua
+BagTweaks.lua
+UI.lua
