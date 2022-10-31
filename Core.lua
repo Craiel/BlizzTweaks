@@ -61,12 +61,17 @@ function BlizzTweaks:RegisterEvents()
     local AceEvent = LibStub("AceEvent-3.0")
     AceEvent:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(evt) BlizzTweaks:HandleBankSlotsChanged(evt) end)
     AceEvent:RegisterEvent("DELETE_ITEM_CONFIRM", function(evt) BlizzTweaks:HandleDeleteConfirm(evt) end)
-    AceEvent:RegisterEvent("MERCHANT_SHOW", function(evt) BlizzTweaks:HandleAutoRepair(evt) end)
+    AceEvent:RegisterEvent("MERCHANT_SHOW", function(evt) BlizzTweaks:HandleMerchantShow(evt) end)
 end
 
 ---------------------------------------------------------
 -- Misc Tweaks
-function BlizzTweaks:HandleAutoRepair(evt)
+function BlizzTweaks:HandleMerchantShow(evt)
+    BlizzTweaks:HandleAutoSellJunk()
+    BlizzTweaks:HandleAutoRepair()
+end
+
+function BlizzTweaks:HandleAutoRepair()
     if not CanMerchantRepair() then
         return
     end
@@ -90,4 +95,25 @@ function BlizzTweaks:HandleAutoRepair(evt)
 
     BlizzTweaks:Print("Repairing Items for "..GetCoinText(repairAllCost,", "));
     RepairAllItems(false);
+end
+
+function BlizzTweaks:HandleAutoSellJunk()
+    totalPrice = 0
+    for myBags = 0,4 do
+        for bagSlots = 1, GetContainerNumSlots(myBags) do
+            CurrentItemLink = GetContainerItemLink(myBags, bagSlots)
+            if CurrentItemLink then
+                _, _, itemRarity, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo(CurrentItemLink)
+                _, itemCount = GetContainerItemInfo(myBags, bagSlots)
+                if itemRarity == 0 and itemSellPrice ~= 0 then
+                    totalPrice = totalPrice + (itemSellPrice * itemCount)
+                    PickupContainerItem(myBags, bagSlots)
+                    PickupMerchantItem(0)
+                end
+            end
+        end
+    end
+    if totalPrice ~= 0 then
+        BlizzTweaks:Print("Junk sold for "..GetCoinTextureString(totalPrice))
+    end
 end
