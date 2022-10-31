@@ -1,4 +1,16 @@
-# Small Tweaks to the standard Blizzard UI
+# Small Tweaks to the standard Blizzard Interface
+
+## Features
+
+### UI
+- Show Number of Slots on Bag items
+- Show Item Level on Gear in inventory, paper doll and inspect frame
+- Show Item level and spec on tooltips on players
+- Show Item level of target in inspect frame
+
+### Functional
+- Auto Repair
+- Auto Sell Junk
 
 ### Usage
 

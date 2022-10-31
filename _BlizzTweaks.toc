@@ -13,3 +13,6 @@ Locales\Locale-enUS.lua
 Core.lua
 BagTweaks.lua
 UI.lua
+Tooltip.lua
+Merchant.lua
+Utils.lua

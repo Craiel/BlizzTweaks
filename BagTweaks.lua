@@ -14,9 +14,6 @@ local GetDetailedItemLevelInfo = GetDetailedItemLevelInfo
 local Cache = GP_ItemButtonInfoFrameCache or {}
 GP_ItemButtonInfoFrameCache = Cache
 
-local _SCANNER = "GP_ScannerTooltip"
-local Scanner = _G[_SCANNER] or CreateFrame("GameTooltip", _SCANNER, WorldFrame, "GameTooltipTemplate")
-
 local k_ILVL = "^" .. string.gsub(ITEM_LEVEL, "%%d", "(%%d+)")
 
 local k_RarityColors = {
@@ -155,6 +152,103 @@ function BlizzTweaks:SetGarbageOverlay(btn)
     container.garbage.icon:SetDesaturated(true)
 end
 
+function BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+    if itemLink == nil then
+        BlizzTweaks:ClearOverlayText(btn)
+        return
+    end
+
+    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, _, _, bindType = GetItemInfo(itemLink)
+    local overlayIsSet = false
+
+    if itemQuality == nil then
+        -- Probably a key stone or another special item
+        BlizzTweaks:ClearOverlayText(btn)
+        return
+    end
+
+    if itemQuality == 0 and not locked then
+        BlizzTweaks:SetGarbageOverlay(btn)
+    else
+        BlizzTweaks:ClearGarbageOverlay(btn)
+    end
+
+    -- Item Level overlay
+    if itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
+        -- Set a threshold to avoid spamming the classics with ilvl 1 whites
+        itemLevel = tonumber(itemLevel or GetDetailedItemLevelInfo(itemLink))
+        if (itemLevel and itemLevel > 1) then
+            BlizzTweaks:SetOverlayText(btn, itemLevel, itemQuality)
+            overlayIsSet = true
+        end
+    end
+
+    if overlayIsSet == false then
+        BlizzTweaks:ClearOverlayText(btn)
+    end
+end
+
+function BlizzTweaks:UpdateSlotBoundState(btn, itemLink, isBound)
+    if itemLink == nil then
+        BlizzTweaks:ClearBoundText(btn)
+        return
+    end
+
+    local _, _, itemQuality, _, _, _, _, _, itemEquipLoc, _, _, _, _, bindType = GetItemInfo(itemLink)
+    local bindIsSet = false
+
+    if itemQuality == nil then
+        -- Probably a key stone or another special item
+        BlizzTweaks:ClearBoundText(btn)
+        return
+    end
+
+    -- Item Level overlay
+    if itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
+        if not isBound then
+            if bindType == 2 then
+                BlizzTweaks:SetBoundText(btn, L["BoE"], itemQuality)
+                bindIsSet = true
+            elseif bindType == 3 then
+                BlizzTweaks:SetBoundText(btn, L["BoU"], itemQuality)
+                bindIsSet = true
+            end
+        end
+    end
+
+    if bindIsSet == false then
+        BlizzTweaks:ClearBoundText(btn)
+    end
+end
+
+function BlizzTweaks:UpdatePaperDollSlot(btn, unit)
+    local slot = btn:GetID()
+    if slot < INVSLOT_FIRST_EQUIPPED or slot > INVSLOT_LAST_EQUIPPED then
+        return
+    end
+    local itemLink = GetInventoryItemLink(unit, slot)
+    if itemLink == nil then
+        BlizzTweaks:ClearButtonMods(btn);
+        return
+    end
+
+    BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+end
+
+function BlizzTweaks:GetSlotItemLevel(btn, unit)
+    local slot = btn:GetID()
+    if slot < INVSLOT_FIRST_EQUIPPED or slot > INVSLOT_LAST_EQUIPPED then
+        return
+    end
+    local itemLink = GetInventoryItemLink(unit, slot)
+    if itemLink == nil then
+        return nil
+    end
+
+    local _, _, _, itemLevel, _, _, _, _, _, _, _, _, _, _ = GetItemInfo(itemLink)
+    return itemLevel
+end
+
 function BlizzTweaks:UpdateBagSlot(btn, bag)
     local slot = btn:GetID()
     local itemLink, locked, quality, isBound, _
@@ -173,70 +267,8 @@ function BlizzTweaks:UpdateBagSlot(btn, bag)
         return
     end
 
-    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, _, _, bindType = GetItemInfo(itemLink)
-    local overlayIsSet = false
-    local bindIsSet = false
-
-    if itemQuality == nil then
-        -- Probably a key stone or another special item
-        BlizzTweaks:ClearButtonMods(btn)
-        return
-    end
-
-    if itemQuality == 0 and not locked then
-        BlizzTweaks:SetGarbageOverlay(btn)
-    else
-        BlizzTweaks:ClearGarbageOverlay(btn)
-    end
-
-    -- Item Level overlay
-    if itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
-        Scanner.owner = btn
-        Scanner.bag = bag
-        Scanner.slot = slot
-        Scanner:SetOwner(btn, "ANCHOR_NONE")
-        Scanner:SetBagItem(bag,slot)
-
-        local tipLevel
-        for i = 2,3 do
-            local line = _G[_SCANNER.."TextLeft"..i]
-            if (line) then
-                local msg = line:GetText()
-                if msg ~= nil and string.find(msg, k_ILVL) then
-                    local ilvl = string.match(msg, k_ILVL)
-                    if (ilvl) and (tonumber(ilvl) > 0) then
-                        tipLevel = ilvl
-                    end
-                    break
-                end
-            end
-        end
-
-        -- Set a threshold to avoid spamming the classics with ilvl 1 whites
-        tipLevel = tonumber(tipLevel or GetDetailedItemLevelInfo(itemLink) or itemLevel)
-        if (tipLevel and tipLevel > 1) then
-            BlizzTweaks:SetOverlayText(btn, tipLevel, itemQuality)
-            overlayIsSet = true
-        end
-
-        if not isBound then
-            if bindType == 2 then
-                BlizzTweaks:SetBoundText(btn, L["BoE"], itemQuality)
-                bindIsSet = true
-            elseif bindType == 3 then
-                BlizzTweaks:SetBoundText(btn, L["BoU"], itemQuality)
-                bindIsSet = true
-            end
-        end
-    end
-
-    if overlayIsSet == false then
-        BlizzTweaks:ClearOverlayText(btn)
-    end
-
-    if bindIsSet == false then
-        BlizzTweaks:ClearBoundText(btn)
-    end
+    BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+    BlizzTweaks:UpdateSlotBoundState(btn, itemLink, isBound)
 end
 
 function BlizzTweaks:UpdateContainer(args)

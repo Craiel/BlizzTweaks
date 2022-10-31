@@ -2,8 +2,6 @@
   BlizzTweaks
 ]]
 
-
-
 ---------------------------------------------------------
 -- Addon declaration
 BlizzTweaks = LibStub("AceAddon-3.0"):NewAddon("BlizzTweaks", "AceConsole-3.0", "AceEvent-3.0")
@@ -57,63 +55,48 @@ function BlizzTweaks:RegisterEvents()
     end
 
     hooksecurefunc(ContainerFrameCombinedBags, "Update", function(args) BlizzTweaks:UpdateCombinedContainer(args) end)
+    hooksecurefunc("PaperDollItemSlotButton_Update", function(btn) BlizzTweaks:UpdatePaperDollSlot(btn, "player") end)
+    --hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(btn) UpdateItemSlotButton(btn, "target") end)
 
     local AceEvent = LibStub("AceEvent-3.0")
     AceEvent:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(evt) BlizzTweaks:HandleBankSlotsChanged(evt) end)
     AceEvent:RegisterEvent("DELETE_ITEM_CONFIRM", function(evt) BlizzTweaks:HandleDeleteConfirm(evt) end)
     AceEvent:RegisterEvent("MERCHANT_SHOW", function(evt) BlizzTweaks:HandleMerchantShow(evt) end)
+    AceEvent:RegisterEvent("UPDATE_MOUSEOVER_UNIT", function(evt) BlizzTweaks:HandleMouseOver(evt) end)
+    AceEvent:RegisterEvent("INSPECT_READY", function(evt) BlizzTweaks:HandleInspect(evt) end)
+    AceEvent:RegisterEvent("PLAYER_TARGET_CHANGED", function(evt) BlizzTweaks:HandleTargetChanged(evt) end)
 end
 
 ---------------------------------------------------------
 -- Misc Tweaks
-function BlizzTweaks:HandleMerchantShow(evt)
-    BlizzTweaks:HandleAutoSellJunk()
-    BlizzTweaks:HandleAutoRepair()
+function BlizzTweaks:HandleMouseOver(evt)
+    if UnitIsPlayer("mouseover") and not BlizzTweaks:IsInspecting() then
+        BlizzTweaks:UpdatePlayerInspectTooltip()
+    end
 end
 
-function BlizzTweaks:HandleAutoRepair()
-    if not CanMerchantRepair() then
-        return
-    end
+function BlizzTweaks:HandleInspect(evt)
+    BlizzTweaks:RefreshInspectWindow()
 
-    repairAllCost, canRepair = GetRepairAllCost()
-    if not canRepair then
-        return
+    if UnitIsPlayer("mouseover") then
+        BlizzTweaks:UpdatePlayerTooltipInspect()
     end
-
-    money = GetMoney()
-    if( IsInGuild() and CanGuildBankRepair() ) then
-        BlizzTweaks:Print("Repairing Items using Guild Funds: "..GetCoinText(repairAllCost,", "));
-        RepairAllItems(true)
-        return
-    end
-
-    if(repairAllCost > money) then
-        BlizzTweaks:Print("Insufficient Money to Repair: "..GetCoinText(repairAllCost,", "));
-        return
-    end
-
-    BlizzTweaks:Print("Repairing Items for "..GetCoinText(repairAllCost,", "));
-    RepairAllItems(false);
 end
 
-function BlizzTweaks:HandleAutoSellJunk()
-    totalPrice = 0
-    for myBags = 0,4 do
-        for bagSlots = 1, GetContainerNumSlots(myBags) do
-            CurrentItemLink = GetContainerItemLink(myBags, bagSlots)
-            if CurrentItemLink then
-                _, _, itemRarity, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo(CurrentItemLink)
-                _, itemCount = GetContainerItemInfo(myBags, bagSlots)
-                if itemRarity == 0 and itemSellPrice ~= 0 then
-                    totalPrice = totalPrice + (itemSellPrice * itemCount)
-                    PickupContainerItem(myBags, bagSlots)
-                    PickupMerchantItem(0)
-                end
-            end
-        end
+function BlizzTweaks:HandleTargetChanged(evt)
+    if not BlizzTweaks:IsInspecting() then
+        return
     end
-    if totalPrice ~= 0 then
-        BlizzTweaks:Print("Junk sold for "..GetCoinTextureString(totalPrice))
+
+    if CanInspect("target") then
+        InspectUnit("target")
     end
+end
+
+function BlizzTweaks:IsInspecting()
+    if InspectModelFrame == nil then
+        return false
+    end
+
+    return InspectFrame:IsVisible()
 end
