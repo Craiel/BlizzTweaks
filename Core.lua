@@ -65,6 +65,8 @@ function BlizzTweaks:RegisterEvents()
     AceEvent:RegisterEvent("UPDATE_MOUSEOVER_UNIT", function(evt) BlizzTweaks:HandleMouseOver(evt) end)
     AceEvent:RegisterEvent("INSPECT_READY", function(evt) BlizzTweaks:HandleInspect(evt) end)
     AceEvent:RegisterEvent("PLAYER_TARGET_CHANGED", function(evt) BlizzTweaks:HandleTargetChanged(evt) end)
+    AceEvent:RegisterEvent("UNIT_SPELLCAST_START", function(evt, unitId) BlizzTweaks:HandleCastStart(evt, unitId) end)
+    AceEvent:RegisterEvent("UNIT_SPELLCAST_CHANNEL_START", function(evt, unitId) BlizzTweaks:HandleCastStart(evt, unitId) end)
 end
 
 ---------------------------------------------------------
@@ -99,4 +101,12 @@ function BlizzTweaks:IsInspecting()
     end
 
     return InspectFrame:IsVisible()
+end
+
+function BlizzTweaks:HandleCastStart(evt, unitId)
+    if not UnitIsEnemy("player", unitId) then
+        return
+    end
+
+    C_Timer.After(0.05, function() BlizzTweaks:UpdateEnemyNameplateCastBar(unitId) end);
 end

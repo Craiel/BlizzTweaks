@@ -53,3 +53,42 @@ function BlizzTweaks:GetClassColor(classId)
         return 0.2, 0.58, 0.50
     end
 end
+
+function BlizzTweaks:GetClassColorHex(classId)
+    if (classId == 1) then --Warrior
+        return "C79C6E"
+    elseif (classId == 2) then --Paladin
+        return "F58CBA"
+    elseif (classId == 3) then --Hunter
+        return "ABD473"
+    elseif (classId == 4) then --Rogue
+        return "FFF569"
+    elseif (classId == 5) then --Priest
+        return "FFFFFF"
+    elseif (classId == 6) then --Death Knight
+        return "C41F3B"
+    elseif (classId == 7) then --Shaman
+        return "0070DE"
+    elseif (classId == 8) then --Mage
+        return "69CCF0"
+    elseif (classId == 9) then --Warlock
+        return "9482C9"
+    elseif (classId == 10) then --Monk
+        return "00FF96"
+    elseif (classId == 11) then --Druid
+        return "FF7D0A"
+    elseif (classId == 12) then --Demon Hunter
+        return "A330C9"
+    elseif (classId == 13) then --Evoker
+        return "33937F"
+    end
+end
+
+function BlizzTweaks:GetClassColoredText(classId, text, opacity)
+    if opacity == nil or opacity == "" then
+        opacity = "FF"
+    end
+
+    local hexStr = opacity..BlizzTweaks:GetClassColorHex(classId)
+    return "|c"..hexStr..text.."|r"
+end

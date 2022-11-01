@@ -16,6 +16,8 @@ for _, slotName in ipairs(k_ItemSlots) do
 end
 
 local m_InspectFontStringAvg = nil
+local k_NamePlateSpellNameSize = 0.60
+
 ---------------------------------------------------------
 -- UI Tweaks
 function BlizzTweaks:HandleDeleteConfirm(evt)
@@ -87,4 +89,41 @@ function BlizzTweaks:RefreshInspectWindow()
     r, g, b = BlizzTweaks:GetILvlColor(averageItemLevel)
     m_InspectFontStringAvg:SetTextColor(r, g, b)
     m_InspectFontStringAvg:SetText(averageItemLevel)
+end
+
+function BlizzTweaks:UpdateEnemyNameplateCastBar(unitId)
+    local targetUnitId = unitId .."target";
+    if not UnitExists(targetUnitId) then
+        return
+    end
+
+    local targetName = UnitName(targetUnitId)
+    local plate = C_NamePlate.GetNamePlateForUnit(unitId)
+    if plate == nil then
+        return
+    end
+
+    local _, _, targetClassId = UnitClass (targetUnitId)
+    targetName = BlizzTweaks:GetClassColoredText(targetClassId, targetName)
+
+    local unitFrame = plate.UnitFrame
+    if unitFrame == nil then
+        return
+    end
+
+    local castBar = unitFrame.castBar
+    if castBar == nil then
+        return
+    end
+
+    local channelName = UnitChannelInfo(unitId);
+    local spellName = channelName or UnitCastingInfo(unitId);
+    if spellName == nil then
+        return
+    end
+
+    castBar.Text:SetText(spellName)
+    local castBarWidth = castBar:GetWidth()
+    DetailsFramework:TruncateText(castBar.Text, castBarWidth * k_NamePlateSpellNameSize)
+    castBar.Text:SetText(castBar.Text:GetText().." ["..targetName.."]")
 end
