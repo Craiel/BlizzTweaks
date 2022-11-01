@@ -4,9 +4,10 @@
 
 ### UI
 - Show Number of Slots on Bag items
-- Show Item Level on Gear in inventory, paper doll and inspect frame
+- Show Item Level and BoE/BoU on Gear in inventory, paper doll and inspect frame
 - Show Item level and spec on tooltips on players
 - Show Item level of target in inspect frame
+- Grey out Junk items in inventory
 
 ### Functional
 - Remove the need to type "Delete" when deleting items of higher quality

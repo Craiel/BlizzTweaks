@@ -3,6 +3,7 @@
 ## Notes: Small Tweaks to the standard UI
 ## Author: Raika
 ## DefaultState: enabled
+## SavedVariables: BlizzTweaksDB
 ## Version: 10.0.0
 
 embeds.xml

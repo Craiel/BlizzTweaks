@@ -7,6 +7,7 @@
 BlizzTweaks = LibStub("AceAddon-3.0"):NewAddon("BlizzTweaks", "AceConsole-3.0", "AceEvent-3.0")
 local BlizzTweaks = BlizzTweaks
 local L = LibStub("AceLocale-3.0"):GetLocale("BlizzTweaks", false)
+local k_MaxItemContainers = 36;
 
 local options = {
     name = "BlizzTweaks",
@@ -30,7 +31,19 @@ function BlizzTweaks:OnInitialize()
     BlizzTweaks:RegisterChatCommand("bt")
     LibStub("AceConfig-3.0"):RegisterOptionsTable("BlizzTweaks", options, {"bt"})
 
+    BlizzTweaks.db = LibStub("AceDB-3.0"):New("BlizzTweaksDB", { profile = {
+        enableItemLevelDisplayOnItems = true,
+        enableTooltipItemLevelAndSpec = true,
+        enableItemLevelOnInspect = true,
+        enableJunkItemGreyOverlay = true,
+        enableAutoSellJunk = true,
+        enableAutoRepair = true,
+        enableEasyDelete = true,
+        enableEnemyCastTargetDisplay = true
+    }, })
+
     BlizzTweaks:RegisterEvents()
+    BlizzTweaks:RefreshOptions()
 
     BlizzTweaks:Print(L["Done!"])
 end
@@ -46,19 +59,19 @@ end
 ---------------------------------------------------------
 -- Setup Methods
 function BlizzTweaks:RegisterEvents()
-    local id = 1
-    local frame = _G["ContainerFrame"..id]
-    while (frame and frame.Update) do
-        hooksecurefunc(frame, "Update", function(args) BlizzTweaks:UpdateContainer(args) end)
-        id = id + 1
-        frame = _G["ContainerFrame"..id]
+    for i=1,k_MaxItemContainers do
+        local frame = _G["ContainerFrame" .. i]
+        if frame and frame:GetParent() and frame:GetParent():GetID() then
+            hooksecurefunc(frame, "Update", function(args) BlizzTweaks:UpdateContainer(args) end)
+        end
     end
 
     hooksecurefunc(ContainerFrameCombinedBags, "Update", function(args) BlizzTweaks:UpdateCombinedContainer(args) end)
     hooksecurefunc("PaperDollItemSlotButton_Update", function(btn) BlizzTweaks:UpdatePaperDollSlot(btn, "player") end)
 
     local AceEvent = LibStub("AceEvent-3.0")
-    AceEvent:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(evt) BlizzTweaks:HandleBankSlotsChanged(evt) end)
+    AceEvent:RegisterEvent("BANKFRAME_OPENED", function(evt) BlizzTweaks:UpdateBankSlots(evt) end)
+    AceEvent:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(evt) BlizzTweaks:UpdateBankSlots(evt) end)
     AceEvent:RegisterEvent("DELETE_ITEM_CONFIRM", function(evt) BlizzTweaks:HandleDeleteConfirm(evt) end)
     AceEvent:RegisterEvent("MERCHANT_SHOW", function(evt) BlizzTweaks:HandleMerchantShow(evt) end)
     AceEvent:RegisterEvent("UPDATE_MOUSEOVER_UNIT", function(evt) BlizzTweaks:HandleMouseOver(evt) end)

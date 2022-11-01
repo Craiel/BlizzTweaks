@@ -10,7 +10,7 @@ local k_InspectName, k_InspectRealm = nil
 ---------------------------------------------------------
 -- Tooltip Tweaks
 function BlizzTweaks:UpdatePlayerInspectTooltip()
-    if k_IsInspectPending == true then
+    if BlizzTweaks.db.profile.enableTooltipItemLevelAndSpec == false or k_IsInspectPending == true then
         return
     end
 
@@ -33,6 +33,10 @@ function BlizzTweaks:UpdatePlayerInspectTooltip()
 end
 
 function BlizzTweaks:UpdatePlayerTooltipInspect()
+    if BlizzTweaks.db.profile.enableTooltipItemLevelAndSpec == false then
+        return
+    end
+
     name, realm = BlizzTweaks:GetMouseOverPlayerInfo()
     if not name or not realm then
         return

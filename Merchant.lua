@@ -12,7 +12,7 @@ function BlizzTweaks:HandleMerchantShow(evt)
 end
 
 function BlizzTweaks:HandleAutoRepair()
-    if not CanMerchantRepair() then
+    if BlizzTweaks.db.profile.enableAutoRepair == false or not CanMerchantRepair() then
         return
     end
 
@@ -38,6 +38,10 @@ function BlizzTweaks:HandleAutoRepair()
 end
 
 function BlizzTweaks:HandleAutoSellJunk()
+    if BlizzTweaks.db.profile.enableAutoSellJunk == false then
+        return
+    end
+
     totalPrice = 0
     for myBags = 0,4 do
         for bagSlots = 1, GetContainerNumSlots(myBags) do

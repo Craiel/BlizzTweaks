@@ -14,7 +14,7 @@ local GetDetailedItemLevelInfo = GetDetailedItemLevelInfo
 local Cache = GP_ItemButtonInfoFrameCache or {}
 GP_ItemButtonInfoFrameCache = Cache
 
-local k_ILVL = "^" .. string.gsub(ITEM_LEVEL, "%%d", "(%%d+)")
+local k_BankBagSlots = 24
 
 local k_RarityColors = {
     [0] = { 157/255, 157/255, 157/255 }, -- Poor
@@ -167,7 +167,7 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
         return
     end
 
-    if itemQuality == 0 and not locked then
+    if itemQuality == 0 and not locked and BlizzTweaks.db.profile.enableJunkItemGreyOverlay == true then
         BlizzTweaks:SetGarbageOverlay(btn)
     else
         BlizzTweaks:ClearGarbageOverlay(btn)
@@ -222,6 +222,10 @@ function BlizzTweaks:UpdateSlotBoundState(btn, itemLink, isBound)
 end
 
 function BlizzTweaks:UpdatePaperDollSlot(btn, unit)
+    if BlizzTweaks.db.profile.enableItemLevelDisplayOnItems == false then
+        return
+    end
+
     local slot = btn:GetID()
     if slot < INVSLOT_FIRST_EQUIPPED or slot > INVSLOT_LAST_EQUIPPED then
         return
@@ -272,6 +276,10 @@ function BlizzTweaks:UpdateBagSlot(btn, bag)
 end
 
 function BlizzTweaks:UpdateContainer(args)
+    if BlizzTweaks.db.profile.enableItemLevelDisplayOnItems == false then
+        return
+    end
+
     local bag = args:GetID()
     local name = args:GetName()
     local id = 1
@@ -288,6 +296,10 @@ function BlizzTweaks:UpdateContainer(args)
 end
 
 function BlizzTweaks:UpdateCombinedContainer(args)
+    if BlizzTweaks.db.profile.enableItemLevelDisplayOnItems == false then
+        return
+    end
+
     for id,button in args:EnumerateItems() do
         if (button.hasItem) then
             -- The buttons retain their original bagID
@@ -298,6 +310,20 @@ function BlizzTweaks:UpdateCombinedContainer(args)
     end
 end
 
-function BlizzTweaks:HandleBankSlotsChanged(evt)
+function BlizzTweaks:UpdateBankSlots(evt)
+    if BlizzTweaks.db.profile.enableItemLevelDisplayOnItems == false then
+        return
+    end
 
+    for slot = 1, GetContainerNumSlots(-1) do
+        local btn = _G["BankFrameItem"..slot]
+        if btn then
+            local itemLink = GetContainerItemLink(-1, slot)
+            if itemLink then
+                BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+            else
+                BlizzTweaks:ClearButtonMods(btn)
+            end
+        end
+    end
 end

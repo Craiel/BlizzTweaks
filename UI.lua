@@ -21,7 +21,7 @@ local k_NamePlateSpellNameSize = 0.60
 ---------------------------------------------------------
 -- UI Tweaks
 function BlizzTweaks:HandleDeleteConfirm(evt)
-    if StaticPopup1EditBox:IsShown() then
+    if StaticPopup1EditBox:IsShown() and BlizzTweaks.db.profile.enableEasyDelete == true then
         StaticPopup1EditBox:Hide()
         StaticPopup1Button1:Enable()
     end
@@ -85,13 +85,19 @@ function BlizzTweaks:RefreshInspectWindow()
         BlizzTweaks:UpdatePaperDollSlot(slot, "target")
     end
 
-    local averageItemLevel = BlizzTweaks:GetInspectAverageItemLevel()
-    r, g, b = BlizzTweaks:GetILvlColor(averageItemLevel)
-    m_InspectFontStringAvg:SetTextColor(r, g, b)
-    m_InspectFontStringAvg:SetText(averageItemLevel)
+    if BlizzTweaks.db.profile.enableItemLevelOnInspect == true then
+        local averageItemLevel = BlizzTweaks:GetInspectAverageItemLevel()
+        r, g, b = BlizzTweaks:GetILvlColor(averageItemLevel)
+        m_InspectFontStringAvg:SetTextColor(r, g, b)
+        m_InspectFontStringAvg:SetText(averageItemLevel)
+    end
 end
 
 function BlizzTweaks:UpdateEnemyNameplateCastBar(unitId)
+    if BlizzTweaks.db.profile.enableEnemyCastTargetDisplay == false then
+        return
+    end
+
     local targetUnitId = unitId .."target";
     if not UnitExists(targetUnitId) then
         return
