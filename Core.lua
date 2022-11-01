@@ -56,7 +56,6 @@ function BlizzTweaks:RegisterEvents()
 
     hooksecurefunc(ContainerFrameCombinedBags, "Update", function(args) BlizzTweaks:UpdateCombinedContainer(args) end)
     hooksecurefunc("PaperDollItemSlotButton_Update", function(btn) BlizzTweaks:UpdatePaperDollSlot(btn, "player") end)
-    --hooksecurefunc("InspectPaperDollItemSlotButton_Update", function(btn) UpdateItemSlotButton(btn, "target") end)
 
     local AceEvent = LibStub("AceEvent-3.0")
     AceEvent:RegisterEvent("PLAYERBANKSLOTS_CHANGED", function(evt) BlizzTweaks:HandleBankSlotsChanged(evt) end)
