@@ -15,7 +15,7 @@ opanel.title:SetJustifyH("LEFT")
 
 opanel.title2 = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 opanel.title2:SetPoint("TOPLEFT", 16, -35)
-opanel.title2:SetText("Author: Raika")
+opanel.title2:SetText("Author: " .. GetAddOnMetadata("BlizzTweaks", "Author") .. "\nVersion: " .. GetAddOnMetadata("BlizzTweaks", "Version"))
 opanel.title2:SetJustifyH("LEFT")
 
 -- ui title
