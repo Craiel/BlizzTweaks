@@ -9,12 +9,19 @@
 - Show Item level of target in inspect frame
 
 ### Functional
+- Remove the need to type "Delete" when deleting items of higher quality
 - Auto Repair
 - Auto Sell Junk
+- Show Target of Enemy Casts in their nameplate
 
 ### Usage
 
 Copy into `Interface\Addons` Folder
+
+## Links
+- Function API: https://wowwiki-archive.fandom.com/wiki/World_of_Warcraft_API
+- Events: https://wowpedia.fandom.com/wiki/Category:API_events
+- Blizzard Interface Code: https://github.com/tomrus88/BlizzardInterfaceCode
 
 ## Contributing
 
