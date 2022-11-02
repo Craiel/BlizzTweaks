@@ -8,6 +8,7 @@
 - Show Item level and spec on tooltips on players
 - Show Item level of target in inspect frame
 - Grey out Junk items in inventory
+- Show Total Anima value of anima item stacks in inventory
 
 ### Functional
 - Remove the need to type "Delete" when deleting items of higher quality

@@ -174,7 +174,7 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
         return
     end
 
-    local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, _, _, bindType = GetItemInfo(itemLink)
+    local itemName, _, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, _, _, bindType = GetItemInfo(itemLink)
     local isAnimaItem = C_Item.IsAnimaItemByID(itemLink)
     local overlayIsSet = false
 
