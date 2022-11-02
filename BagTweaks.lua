@@ -152,13 +152,30 @@ function BlizzTweaks:SetGarbageOverlay(btn)
     container.garbage.icon:SetDesaturated(true)
 end
 
-function BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+function BlizzTweaks:GetAnimaValue(quality, stackCount)
+    if stackCount == nil or stackCount == 0 then
+        return 0
+    end
+
+    if quality == 2 then
+        return stackCount * 5
+    elseif quality == 3 then
+        return stackCount * 35
+    elseif quality == 4 then
+        return stackCount * 250
+    end
+
+    return 0
+end
+
+function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
     if itemLink == nil then
         BlizzTweaks:ClearOverlayText(btn)
         return
     end
 
-    local _, _, itemQuality, itemLevel, _, _, _, _, itemEquipLoc, _, _, _, _, bindType = GetItemInfo(itemLink)
+    local itemName, itemLink, itemQuality, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemTexture, itemSellPrice, _, _, bindType = GetItemInfo(itemLink)
+    local isAnimaItem = C_Item.IsAnimaItemByID(itemLink)
     local overlayIsSet = false
 
     if itemQuality == nil then
@@ -173,8 +190,15 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
         BlizzTweaks:ClearGarbageOverlay(btn)
     end
 
-    -- Item Level overlay
-    if itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
+    if isAnimaItem == true then
+        -- Anima Overlay
+        local animaValue = BlizzTweaks:GetAnimaValue(itemQuality, itemCount)
+        if animaValue > 0 then
+            BlizzTweaks:SetOverlayText(btn, animaValue, 8)
+            overlayIsSet = true
+        end
+    elseif itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
+        -- Item Level overlay
         -- Set a threshold to avoid spamming the classics with ilvl 1 whites
         itemLevel = tonumber(itemLevel or GetDetailedItemLevelInfo(itemLink))
         if (itemLevel and itemLevel > 1) then
@@ -255,7 +279,7 @@ end
 
 function BlizzTweaks:UpdateBagSlot(btn, bag)
     local slot = btn:GetID()
-    local itemLink, locked, quality, isBound, _
+    local itemLink, locked, quality, isBound, itemCount, _
     if (C_Container_GetContainerItemInfo) then
         local containerInfo = C_Container_GetContainerItemInfo(bag,slot)
         if (containerInfo) then
@@ -263,7 +287,7 @@ function BlizzTweaks:UpdateBagSlot(btn, bag)
             itemLink = containerInfo.hyperlink
         end
     else
-        _, _, locked, quality, _, _, itemLink, _, _, _, isBound = GetContainerItemInfo(bag,slot)
+        _, itemCount, locked, quality, _, _, itemLink, _, _, _, isBound = GetContainerItemInfo(bag,slot)
     end
 
     if itemLink == nil then
@@ -271,7 +295,7 @@ function BlizzTweaks:UpdateBagSlot(btn, bag)
         return
     end
 
-    BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+    BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
     BlizzTweaks:UpdateSlotBoundState(btn, itemLink, isBound)
 end
 
