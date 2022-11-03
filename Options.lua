@@ -52,7 +52,7 @@ opanel.labelShowTargetItemLvlInInspect:SetJustifyH("LEFT")
 opanel.labelShowTargetItemLvlInInspect:SetText("Show Item level of target in inspect frame")
 
 -- ui option - Grey out Junk Items
-opanel.checkGreyOutJunkItems = CreateFrame("CheckButton", "BT_checkShowTargetItemLvlInInspect", opanel, "OptionsBaseCheckButtonTemplate")
+opanel.checkGreyOutJunkItems = CreateFrame("CheckButton", "BT_checkGreyOutJunkItems", opanel, "OptionsBaseCheckButtonTemplate")
 opanel.checkGreyOutJunkItems:SetPoint("TOPLEFT", opanel.checkShowTargetItemLvlInInspect, "BOTTOMLEFT", 0, -8)
 opanel.checkGreyOutJunkItems:SetScript("OnClick", function() BlizzTweaks.db.profile.enableJunkItemGreyOverlay = opanel.checkGreyOutJunkItems:GetChecked() end)
 opanel.labelGreyOutJunkItems = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
@@ -60,9 +60,18 @@ opanel.labelGreyOutJunkItems:SetPoint("LEFT", opanel.checkGreyOutJunkItems, "RIG
 opanel.labelGreyOutJunkItems:SetJustifyH("LEFT")
 opanel.labelGreyOutJunkItems:SetText("Grey out Junk Items in Bags")
 
+-- ui option - Color Missing Enchants
+opanel.checkHighlightMissingEnchants = CreateFrame("CheckButton", "BT_checkHighlightMissingEnchants", opanel, "OptionsBaseCheckButtonTemplate")
+opanel.checkHighlightMissingEnchants:SetPoint("TOPLEFT", opanel.checkGreyOutJunkItems, "BOTTOMLEFT", 0, -8)
+opanel.checkHighlightMissingEnchants:SetScript("OnClick", function() BlizzTweaks.db.profile.enableMissingEnchantOverlay = opanel.checkHighlightMissingEnchants:GetChecked() end)
+opanel.labelHighlightMissingEnchants = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+opanel.labelHighlightMissingEnchants:SetPoint("LEFT", opanel.checkHighlightMissingEnchants, "RIGHT", 2, 1)
+opanel.labelHighlightMissingEnchants:SetJustifyH("LEFT")
+opanel.labelHighlightMissingEnchants:SetText("Highlight Missing Enchants on equipped gear")
+
 -- functional title
 opanel.functionalTitle = opanel:CreateFontString(nil, "ARTWORK", "GameFontNormalMed3")
-opanel.functionalTitle:SetPoint("TOPLEFT",  opanel.checkGreyOutJunkItems, "BOTTOMLEFT", 0, -20)
+opanel.functionalTitle:SetPoint("TOPLEFT",  opanel.checkHighlightMissingEnchants, "BOTTOMLEFT", 0, -20)
 opanel.functionalTitle:SetText("Functional")
 opanel.functionalTitle:SetJustifyH("LEFT")
 
@@ -110,7 +119,8 @@ function BlizzTweaks:RefreshOptions()
     opanel.checkShowItemLvlOnBagItems:SetChecked(BlizzTweaks.db.profile.enableItemLevelDisplayOnItems)
     opanel.checkShowItemLvlSpecOnPlayers:SetChecked(BlizzTweaks.db.profile.enableTooltipItemLevelAndSpec)
     opanel.checkShowTargetItemLvlInInspect:SetChecked(BlizzTweaks.db.profile.enableItemLevelOnInspect)
-        opanel.checkGreyOutJunkItems:SetChecked(BlizzTweaks.db.profile.enableJunkItemGreyOverlay)
+    opanel.checkGreyOutJunkItems:SetChecked(BlizzTweaks.db.profile.enableJunkItemGreyOverlay)
+    opanel.checkHighlightMissingEnchants:SetChecked(BlizzTweaks.db.profile.enableMissingEnchantOverlay)
     opanel.checkAutoRepair:SetChecked(BlizzTweaks.db.profile.enableAutoRepair)
     opanel.checkAutoSellChunk:SetChecked(BlizzTweaks.db.profile.enableAutoSellJunk)
     opanel.checkEasyDelete:SetChecked(BlizzTweaks.db.profile.enableEasyDelete)

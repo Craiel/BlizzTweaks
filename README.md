@@ -9,6 +9,7 @@
 - Show Item level of target in inspect frame
 - Grey out Junk items in inventory
 - Show Total Anima value of anima item stacks in inventory
+- Highlight Missing Enchants on Equipped Items
 
 ### Functional
 - Remove the need to type "Delete" when deleting items of higher quality

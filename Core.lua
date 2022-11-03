@@ -36,6 +36,7 @@ function BlizzTweaks:OnInitialize()
         enableTooltipItemLevelAndSpec = true,
         enableItemLevelOnInspect = true,
         enableJunkItemGreyOverlay = true,
+        enableMissingEnchantOverlay = false,
         enableAutoSellJunk = true,
         enableAutoRepair = true,
         enableEasyDelete = true,

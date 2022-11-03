@@ -28,12 +28,37 @@ local k_RarityColors = {
     [8] = { 79/255, 196/255, 225/255 } -- Blizzard
 }
 
+local k_SlotsWithEnchants = {
+    [5] = true, -- Chest
+    [8] = true, -- Feet
+    [9] = true, -- Wrist
+    [10] = true, -- Hands
+    [11] = true, -- Ring1,
+    [12] = true, -- Ring2
+    [15] = true, -- Cloak
+    [16] = true, -- Main Hand
+}
+
+local k_JunkColorOverlay = {
+    ["r"] = (51/255)*.2,
+    ["g"] = (17/255)*.2,
+    ["b"] = (6/255)*.2,
+    ["a"] = .6
+}
+
+local k_EnchantColorOverlay = {
+    ["r"] = 255/255,
+    ["g"] = 0,
+    ["b"] = 0,
+    ["a"] = 0.4
+}
+
 ---------------------------------------------------------
 -- Update Methods
 function BlizzTweaks:ClearButtonMods(btn)
     BlizzTweaks:ClearOverlayText(btn)
     BlizzTweaks:ClearBoundText(btn)
-    BlizzTweaks:ClearGarbageOverlay(btn)
+    BlizzTweaks:ClearColorOverlay(btn)
 end
 
 function BlizzTweaks:ClearOverlayText(btn)
@@ -54,14 +79,14 @@ function BlizzTweaks:ClearBoundText(btn)
     cache.bind:SetText("")
 end
 
-function BlizzTweaks:ClearGarbageOverlay(btn)
+function BlizzTweaks:ClearColorOverlay(btn)
     local cache = Cache[btn]
-    if cache == nil or cache.garbage == nil then
+    if cache == nil or cache.colOverlay == nil then
         return
     end
 
-    cache.garbage:Hide()
-    cache.garbage.icon:SetDesaturated(locked)
+    cache.colOverlay:Hide()
+    cache.colOverlay.icon:SetDesaturated(locked)
 end
 
 function BlizzTweaks:GetContainer(btn)
@@ -135,21 +160,24 @@ function BlizzTweaks:SetOverlayText(btn, text, rarity)
     container.overlay:SetText(text)
 end
 
-function BlizzTweaks:SetGarbageOverlay(btn)
+function BlizzTweaks:SetColorOverlay(btn, rgba, desaturate)
     local container = BlizzTweaks:GetContainer(btn)
 
-    -- Retrieve of create the garbage overlay
-    if (not container.garbage) then
-        container.garbage = btn:CreateTexture()
-        container.garbage.icon = btn.Icon or btn.icon or _G[btn:GetName().."IconTexture"]
-        local layer,level = container.garbage.icon:GetDrawLayer()
-        container.garbage:SetDrawLayer(layer, (level or 6) + 1)
-        container.garbage:SetAllPoints(container.garbage.icon)
-        container.garbage:SetColorTexture((51/255)*.2, (17/255)*.2, (6/255)*.2, .6)
+    -- Retrieve or create the color overlay
+    if (not container.colOverlay) then
+        container.colOverlay = btn:CreateTexture()
+        container.colOverlay.icon = btn.Icon or btn.icon or _G[btn:GetName().."IconTexture"]
+        local layer,level = container.colOverlay.icon:GetDrawLayer()
+        container.colOverlay:SetDrawLayer(layer, (level or 6) + 1)
+        container.colOverlay:SetAllPoints(container.colOverlay.icon)
+        container.colOverlay:SetColorTexture(rgba.r, rgba.g, rgba.b, rgba.a)
     end
 
-    container.garbage:Show()
-    container.garbage.icon:SetDesaturated(true)
+    container.colOverlay:Show()
+
+    if desaturate == true then
+        container.colOverlay.icon:SetDesaturated(true)
+    end
 end
 
 function BlizzTweaks:GetAnimaValue(quality, stackCount)
@@ -168,6 +196,7 @@ function BlizzTweaks:GetAnimaValue(quality, stackCount)
     return 0
 end
 
+
 function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
     if itemLink == nil then
         BlizzTweaks:ClearOverlayText(btn)
@@ -185,9 +214,9 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
     end
 
     if itemQuality == 0 and not locked and BlizzTweaks.db.profile.enableJunkItemGreyOverlay == true then
-        BlizzTweaks:SetGarbageOverlay(btn)
+        BlizzTweaks:SetColorOverlay(btn, k_JunkColorOverlay, true)
     else
-        BlizzTweaks:ClearGarbageOverlay(btn)
+        BlizzTweaks:ClearColorOverlay(btn)
     end
 
     if isAnimaItem == true then
@@ -254,6 +283,7 @@ function BlizzTweaks:UpdatePaperDollSlot(btn, unit)
     if slot < INVSLOT_FIRST_EQUIPPED or slot > INVSLOT_LAST_EQUIPPED then
         return
     end
+
     local itemLink = GetInventoryItemLink(unit, slot)
     if itemLink == nil then
         BlizzTweaks:ClearButtonMods(btn);
@@ -261,6 +291,16 @@ function BlizzTweaks:UpdatePaperDollSlot(btn, unit)
     end
 
     BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
+
+    if BlizzTweaks.db.profile.enableMissingEnchantOverlay == true then
+        local shouldHaveEnchant = k_SlotsWithEnchants[slot] == true
+        if shouldHaveEnchant then
+            local enchantId, gemId = string.match(itemLink,'item:(%d+):(%d+)')
+            if enchantId == nil then
+                BlizzTweaks:SetColorOverlay(btn, k_EnchantColorOverlay)
+            end
+        end
+    end
 end
 
 function BlizzTweaks:GetSlotItemLevel(btn, unit)
