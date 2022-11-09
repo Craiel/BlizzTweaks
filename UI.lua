@@ -130,6 +130,9 @@ function BlizzTweaks:UpdateEnemyNameplateCastBar(unitId)
 
     castBar.Text:SetText(spellName)
     local castBarWidth = castBar:GetWidth()
-    DetailsFramework:TruncateText(castBar.Text, castBarWidth * k_NamePlateSpellNameSize)
+    if DetailsFramework ~= nil then
+        DetailsFramework:TruncateText(castBar.Text, castBarWidth * k_NamePlateSpellNameSize)
+    end
+
     castBar.Text:SetText(castBar.Text:GetText().." ["..targetName.."]")
 end
