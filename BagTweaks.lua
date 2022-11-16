@@ -379,10 +379,10 @@ function BlizzTweaks:UpdateBankSlots(evt)
         return
     end
 
-    for slot = 1, GetContainerNumSlots(-1) do
+    for slot = 1, C_Container.GetContainerNumSlots(-1) do
         local btn = _G["BankFrameItem"..slot]
         if btn then
-            local itemLink = GetContainerItemLink(-1, slot)
+            local itemLink = C_Container.GetContainerItemLink(-1, slot)
             if itemLink then
                 BlizzTweaks:UpdateSlotOverlay(btn, itemLink)
             else
