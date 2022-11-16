@@ -6,8 +6,6 @@ local L = LibStub("AceLocale-3.0"):GetLocale("BlizzTweaks", false)
 
 ---------------------------------------------------------
 -- WoW API
-local GetContainerItemInfo = GetContainerItemInfo
-local C_Container_GetContainerItemInfo = C_Container and C_Container.GetContainerItemInfo
 local GetItemInfo = GetItemInfo
 local GetDetailedItemLevelInfo = GetDetailedItemLevelInfo
 
@@ -225,6 +223,8 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
         if animaValue > 0 then
             BlizzTweaks:SetOverlayText(btn, animaValue, 8)
             overlayIsSet = true
+        else
+            print("Anima without Value: " .. itemCount)
         end
     elseif itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
         -- Item Level overlay
@@ -319,15 +319,15 @@ end
 
 function BlizzTweaks:UpdateBagSlot(btn, bag)
     local slot = btn:GetID()
-    local itemLink, locked, quality, isBound, itemCount, _
-    if (C_Container_GetContainerItemInfo) then
-        local containerInfo = C_Container_GetContainerItemInfo(bag,slot)
-        if (containerInfo) then
-            isBound = containerInfo.isBound
-            itemLink = containerInfo.hyperlink
-        end
-    else
-        _, itemCount, locked, quality, _, _, itemLink, _, _, _, isBound = GetContainerItemInfo(bag,slot)
+    local itemLink, isBound, itemCount, _
+    local containerInfo = C_Container.GetContainerItemInfo(bag,slot)
+    if (containerInfo) then
+        --[[for key, val in pairs(containerInfo) do
+            print(key..': ')
+        end]]--
+        isBound = containerInfo.isBound
+        itemLink = containerInfo.hyperlink
+        itemCount = containerInfo.stackCount
     end
 
     if itemLink == nil then

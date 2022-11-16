@@ -1,4 +1,4 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: Blizz UI Tweaks
 ## Notes: Small Tweaks to the standard UI
 ## Author: Raika
