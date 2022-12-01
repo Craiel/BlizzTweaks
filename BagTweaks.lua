@@ -229,7 +229,8 @@ function BlizzTweaks:UpdateSlotOverlay(btn, itemLink, itemCount)
     elseif itemQuality > 0 and itemEquipLoc ~= nil and _G[itemEquipLoc] ~= nil then
         -- Item Level overlay
         -- Set a threshold to avoid spamming the classics with ilvl 1 whites
-        itemLevel = tonumber(itemLevel or GetDetailedItemLevelInfo(itemLink))
+        local effectiveItemLevel, _, _ = GetDetailedItemLevelInfo(itemLink)
+        itemLevel = tonumber(effectiveItemLevel)
         if (itemLevel and itemLevel > 1) then
             BlizzTweaks:SetOverlayText(btn, itemLevel, itemQuality)
             overlayIsSet = true

@@ -11,13 +11,13 @@ function BlizzTweaks:GetILvlColor(ilvl)
         return GetItemQualityColor(1)
     end
 
-    if ilvl > 300 then
+    if ilvl > 400 then
         return GetItemQualityColor(5) --Legendary
-    elseif ilvl > 260 then
+    elseif ilvl > 360 then
         return GetItemQualityColor(4) --Epic
-    elseif ilvl > 230 then
+    elseif ilvl > 330 then
         return GetItemQualityColor(3) --Rare
-    elseif ilvl > 180 then
+    elseif ilvl > 280 then
         return GetItemQualityColor(2) --Uncommon
     else
         return GetItemQualityColor(1) --Common
