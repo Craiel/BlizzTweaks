@@ -276,7 +276,7 @@ function BlizzTweaks:UpdateSlotBoundState(btn, itemLink, isBound)
 end
 
 function BlizzTweaks:UpdatePaperDollSlot(btn, unit)
-    if BlizzTweaks.db.profile.enableItemLevelDisplayOnItems == false then
+    if BlizzTweaks.db.profile.enableItemLevelDisplayOnPaperDoll == false then
         return
     end
 

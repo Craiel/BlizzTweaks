@@ -24,18 +24,27 @@ opanel.uiTitle:SetPoint("TOPLEFT",  opanel.title2, "BOTTOMLEFT", 0, -20)
 opanel.uiTitle:SetText("UI")
 opanel.uiTitle:SetJustifyH("LEFT")
 
--- ui option - Show Item Level on Gear in inventory, paper doll and inspect frame
+-- ui option - Show Item Level on Gear in inventory
 opanel.checkShowItemLvlOnBagItems = CreateFrame("CheckButton", "BT_checkShowItemLvlOnBagItems", opanel, "OptionsBaseCheckButtonTemplate")
 opanel.checkShowItemLvlOnBagItems:SetPoint("TOPLEFT", opanel.uiTitle, "BOTTOMLEFT", 0, -10)
 opanel.checkShowItemLvlOnBagItems:SetScript("OnClick", function() BlizzTweaks.db.profile.enableItemLevelDisplayOnItems = opanel.checkShowItemLvlOnBagItems:GetChecked() end)
 opanel.labelShowItemLvlOnBagItems = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 opanel.labelShowItemLvlOnBagItems:SetPoint("LEFT", opanel.checkShowItemLvlOnBagItems, "RIGHT", 2, 1)
 opanel.labelShowItemLvlOnBagItems:SetJustifyH("LEFT")
-opanel.labelShowItemLvlOnBagItems:SetText("Show Item Level, Bound State and Slots on Gear and Bags in inventory, paper doll and inspect frame")
+opanel.labelShowItemLvlOnBagItems:SetText("Show Item Level, Bound State and Slots on Gear and Bags in inventory")
+
+-- ui option - Show Item Level on Gear in paper doll and inspect frame
+opanel.checkShowItemLvlOnPaperDoll = CreateFrame("CheckButton", "BT_checkShowItemLvlOnPaperdoll", opanel, "OptionsBaseCheckButtonTemplate")
+opanel.checkShowItemLvlOnPaperDoll:SetPoint("TOPLEFT", opanel.checkShowItemLvlOnBagItems, "BOTTOMLEFT", 0, -8)
+opanel.checkShowItemLvlOnPaperDoll:SetScript("OnClick", function() BlizzTweaks.db.profile.enableItemLevelDisplayOnPaperDoll = opanel.checkShowItemLvlOnPaperDoll:GetChecked() end)
+opanel.labelShowItemLvlOnPaperDoll = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
+opanel.labelShowItemLvlOnPaperDoll:SetPoint("LEFT", opanel.checkShowItemLvlOnPaperDoll, "RIGHT", 2, 1)
+opanel.labelShowItemLvlOnPaperDoll:SetJustifyH("LEFT")
+opanel.labelShowItemLvlOnPaperDoll:SetText("Show Item Level, Bound State and Slots on Gear in paper doll and inspect frame")
 
 -- ui option - Show Item level and spec on tooltips on players
 opanel.checkShowItemLvlSpecOnPlayers = CreateFrame("CheckButton", "BT_checkShowItemLvlSpecOnPlayers", opanel, "OptionsBaseCheckButtonTemplate")
-opanel.checkShowItemLvlSpecOnPlayers:SetPoint("TOPLEFT", opanel.checkShowItemLvlOnBagItems, "BOTTOMLEFT", 0, -8)
+opanel.checkShowItemLvlSpecOnPlayers:SetPoint("TOPLEFT", opanel.checkShowItemLvlOnPaperDoll, "BOTTOMLEFT", 0, -8)
 opanel.checkShowItemLvlSpecOnPlayers:SetScript("OnClick", function() BlizzTweaks.db.profile.enableTooltipItemLevelAndSpec = opanel.checkShowItemLvlSpecOnPlayers:GetChecked() end)
 opanel.labelShowItemLvlSpecOnPlayers = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 opanel.labelShowItemLvlSpecOnPlayers:SetPoint("LEFT", opanel.checkShowItemLvlSpecOnPlayers, "RIGHT", 2, 1)
@@ -117,6 +126,7 @@ InterfaceOptions_AddCategory(BlizzTweaks.opanel);
 
 function BlizzTweaks:RefreshOptions()
     opanel.checkShowItemLvlOnBagItems:SetChecked(BlizzTweaks.db.profile.enableItemLevelDisplayOnItems)
+    opanel.checkShowItemLvlOnPaperDoll:SetChecked(BlizzTweaks.db.profile.enableItemLevelDisplayOnPaperDoll)
     opanel.checkShowItemLvlSpecOnPlayers:SetChecked(BlizzTweaks.db.profile.enableTooltipItemLevelAndSpec)
     opanel.checkShowTargetItemLvlInInspect:SetChecked(BlizzTweaks.db.profile.enableItemLevelOnInspect)
     opanel.checkGreyOutJunkItems:SetChecked(BlizzTweaks.db.profile.enableJunkItemGreyOverlay)

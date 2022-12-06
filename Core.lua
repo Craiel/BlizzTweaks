@@ -33,6 +33,7 @@ function BlizzTweaks:OnInitialize()
 
     BlizzTweaks.db = LibStub("AceDB-3.0"):New("BlizzTweaksDB", { profile = {
         enableItemLevelDisplayOnItems = true,
+        enableItemLevelDisplayOnPaperDoll = true,
         enableTooltipItemLevelAndSpec = true,
         enableItemLevelOnInspect = true,
         enableJunkItemGreyOverlay = true,
