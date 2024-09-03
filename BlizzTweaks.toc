@@ -1,10 +1,10 @@
-## Interface: 100002
+## Interface: 110002
 ## Title: Blizz UI Tweaks
 ## Notes: Small Tweaks to the standard UI
 ## Author: Raika
 ## DefaultState: enabled
 ## SavedVariables: BlizzTweaksDB
-## Version: 10.0.0
+## Version: 11.0.2
 
 embeds.xml
 
