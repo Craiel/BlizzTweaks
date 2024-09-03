@@ -15,7 +15,7 @@ opanel.title:SetJustifyH("LEFT")
 
 opanel.title2 = opanel:CreateFontString(nil, "ARTWORK", "GameFontHighlight")
 opanel.title2:SetPoint("TOPLEFT", 16, -35)
-opanel.title2:SetText("Author: " .. GetAddOnMetadata("BlizzTweaks", "Author") .. "\nVersion: " .. GetAddOnMetadata("BlizzTweaks", "Version"))
+opanel.title2:SetText("Author: " .. C_AddOns.GetAddOnMetadata("BlizzTweaks", "Author") .. "\nVersion: " .. C_AddOns.GetAddOnMetadata("BlizzTweaks", "Version"))
 opanel.title2:SetJustifyH("LEFT")
 
 -- ui title
@@ -122,7 +122,9 @@ opanel.labelEnemyCastTargetPlate:SetText("Show target of enemy spell casts in th
 
 BlizzTweaks.opanel = opanel
 BlizzTweaks.opanel.name = "BlizzTweaks";
-InterfaceOptions_AddCategory(BlizzTweaks.opanel);
+
+local category, layout = _G.Settings.RegisterCanvasLayoutCategory(BlizzTweaks.opanel, BlizzTweaks.opanel.name)
+_G.Settings.RegisterAddOnCategory(category)
 
 function BlizzTweaks:RefreshOptions()
     opanel.checkShowItemLvlOnBagItems:SetChecked(BlizzTweaks.db.profile.enableItemLevelDisplayOnItems)
